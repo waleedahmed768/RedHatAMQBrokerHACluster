@@ -14,12 +14,27 @@ You created a Persistent Volume Claim (PVC) to request a shared volume to store 
 
 
 After deploying Master/Slave Cluster 
-only Master  will be in Ready State.Slave will remain in Not Ready State Untill Slave Became master 
-NAME                 READY   STATUS             RESTARTS         AGE
-peer-broker-a-ss-0   1/1     Running            0                72m
-peer-broker-b-ss-0   0/1     Running            0                72m
-peer-broker-c-ss-0   0/1     Running            0                72m
+only Master  will be in Ready State.Slave will remain in Not Ready State Untill Slave Became master  
+
+
+
+ 
+   NAME                 READY   STATUS            
+   peer-broker-a-ss-0   1/1     Running           
+   peer-broker-b-ss-0   0/1     Running            
+   peer-broker-c-ss-0   0/1     Running            
 
 Configuring data mirroring for disaster recovery 
 
 Mirroring is the process of copying data from a broker to one or more other brokers for disaster recovery. The source and target brokers in a mirror can be on separate OpenShift clusters in different data centers to protect against a data center outage. Mirroring can also be used for data backup or to create a failover broker for use during maintenance windows. Messages that existed before a mirror is created are not mirrored.
+
+
+Test Message:
+
+
+oc rsh peer-broker-a-ss-0
+
+cd amq-broker
+./bin/artemis
+
+Red Hat AMQ Broker 7.13.2.GA >      producer --url tcp://172.16.1.76:61616 --user admin --password admin --destination myqueue --message-count 10 --message  "hello from prod master "
