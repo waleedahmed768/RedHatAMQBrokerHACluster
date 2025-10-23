@@ -1,0 +1,189 @@
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemis
+metadata:
+  name: peer-broker-a
+spec:
+  deploymentPlan:
+    size: 1
+    persistenceEnabled: false
+    clustered: false
+    extraVolumes:
+    - name: extra-volume
+      persistentVolumeClaim:
+        claimName: amq-nfs-pvc
+    extraVolumeMounts:
+    - name: extra-volume
+      mountPath: /opt/amq-broker/data
+    readinessProbe:
+      tcpSocket:
+        port: 61616
+      initialDelaySeconds: 60
+      periodSeconds: 15
+    livenessProbe:
+      exec:
+        command:
+        - test
+        - -f
+        - /home/jboss/amq-broker/lock/cli.lock
+    console:
+      expose: true
+  brokerProperties:
+   - HAPolicyConfiguration=SHARED_STORE_PRIMARY
+   - journalDirectory=/opt/amq-broker/data/journal
+   - pagingDirectory=/opt/amq-broker/data/paging,
+   - bindingsDirectory=/opt/amq-broker/data/bindings
+   - largeMessagesDirectory=/opt/amq-broker/data/largemessages
+   - maxDiskUsage=85
+   - clusterConfigurations.my-cluster.producerWindowSize=-1
+   - 'addressSettings.#.redeliveryMultiplier=5'
+   - criticalAnalyzer=true
+   - criticalAnalyzerTimeout=6000
+   - criticalAnalyzerCheckPeriod=-1
+   - criticalAnalyzerPolicy=LOG
+   - >-
+     AMQPConnections.prod.uri=tcp://172.16.1.76:31616
+   - AMQPConnections.prod.retryInterval=5000
+   - AMQPConnections.prod.user=admin
+   - AMQPConnections.prod.password=admin
+   - AMQPConnections.prod.connectionElements.mirror.type=MIRROR
+   - >-
+     AMQPConnections.prod.connectionElements.mirror.messageAcknowledgements=true
+   - AMQPConnections.prod.connectionElements.mirror.queueCreation=true
+   - AMQPConnections.prod.connectionElements.mirror.queueRemoval=true
+  logging:
+    loggers:
+      org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnector: DEBUG
+      org.apache.activemq.artemis.core.server: DEBUG
+  acceptors:
+  - name: ext-acceptor
+    protocols: all
+    port: 61616
+    expose: true
+    sslEnabled: false
+  - expose: true
+    name: amqp
+    port: 5672
+    protocols: amqp
+    sslEnabled: false
+---
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemis
+metadata:
+  name: peer-broker-b
+spec:
+  deploymentPlan:
+    size: 1
+    persistenceEnabled: false
+    clustered: false
+    extraVolumes:
+    - name: extra-volume
+      persistentVolumeClaim:
+        claimName: amq-nfs-pvc
+    extraVolumeMounts:
+    - name: extra-volume
+      mountPath: /opt/amq-broker/data
+    livenessProbe:
+      exec:
+        command:
+        - test
+        - -f
+        - /home/jboss/amq-broker/lock/cli.lock
+    console:
+      expose: true
+  brokerProperties:
+   - HAPolicyConfiguration=SHARED_STORE_PRIMARY
+   - journalDirectory=/opt/amq-broker/data/journal
+   - pagingDirectory=/opt/amq-broker/data/paging,
+   - bindingsDirectory=/opt/amq-broker/data/bindings
+   - largeMessagesDirectory=/opt/amq-broker/data/largemessages
+   - maxDiskUsage=85
+   - clusterConfigurations.my-cluster.producerWindowSize=-1
+   - 'addressSettings.#.redeliveryMultiplier=5'
+   - criticalAnalyzer=true
+   - criticalAnalyzerTimeout=6000
+   - criticalAnalyzerCheckPeriod=-1
+   - criticalAnalyzerPolicy=LOG
+   - >-
+     AMQPConnections.prod.uri=tcp://172.16.1.76:31616
+   - AMQPConnections.prod.retryInterval=5000
+   - AMQPConnections.prod.user=admin
+   - AMQPConnections.prod.password=admin
+   - AMQPConnections.prod.connectionElements.mirror.type=MIRROR
+   - >-
+     AMQPConnections.prod.connectionElements.mirror.messageAcknowledgements=true
+   - AMQPConnections.prod.connectionElements.mirror.queueCreation=true
+   - AMQPConnections.prod.connectionElements.mirror.queueRemoval=true
+  acceptors:
+  - name: ext-acceptor
+    protocols: CORE
+    port: 61616
+    expose: true
+    sslEnabled: false
+  - expose: true
+    name: amqp
+    port: 5672
+    protocols: amqp
+    sslEnabled: false
+
+---
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemis
+metadata:
+  name: peer-broker-c
+spec:
+  deploymentPlan:
+    size: 1
+    persistenceEnabled: false
+    clustered: false
+    extraVolumes:
+    - name: extra-volume
+      persistentVolumeClaim:
+        claimName: amq-nfs-pvc
+    extraVolumeMounts:
+    - name: extra-volume
+      mountPath: /opt/amq-broker/data
+    livenessProbe:
+      exec:
+        command:
+        - test
+        - -f
+        - /home/jboss/amq-broker/lock/cli.lock
+    console:
+      expose: true
+  brokerProperties:
+   - HAPolicyConfiguration=SHARED_STORE_PRIMARY
+   - journalDirectory=/opt/amq-broker/data/journal
+   - pagingDirectory=/opt/amq-broker/data/paging,
+   - bindingsDirectory=/opt/amq-broker/data/bindings
+   - largeMessagesDirectory=/opt/amq-broker/data/largemessages
+   - maxDiskUsage=85
+   - clusterConfigurations.my-cluster.producerWindowSize=-1
+   - 'addressSettings.#.redeliveryMultiplier=5'
+   - criticalAnalyzer=true
+   - criticalAnalyzerTimeout=6000
+   - criticalAnalyzerCheckPeriod=-1
+   - criticalAnalyzerPolicy=LOG
+   - >-
+     AMQPConnections.prod.uri=tcp://172.16.1.76:31616
+   - AMQPConnections.prod.retryInterval=5000
+   - AMQPConnections.prod.user=admin
+   - AMQPConnections.prod.password=admin
+   - AMQPConnections.prod.connectionElements.mirror.type=MIRROR
+   - >-
+     AMQPConnections.prod.connectionElements.mirror.messageAcknowledgements=true
+   - AMQPConnections.prod.connectionElements.mirror.queueCreation=true
+   - AMQPConnections.prod.connectionElements.mirror.queueRemoval=true
+  acceptors:
+  - name: ext-acceptor
+    protocols: CORE
+    port: 61616
+    expose: true
+    sslEnabled: false
+  - expose: true
+    name: amqp
+    port: 5672
+    protocols: amqp
+    sslEnabled: false
+
+
+
