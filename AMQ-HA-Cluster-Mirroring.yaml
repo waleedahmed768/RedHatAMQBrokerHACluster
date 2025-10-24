@@ -7,6 +7,8 @@ spec:
     size: 1
     persistenceEnabled: false
     clustered: false
+    labels:
+      broker-cluster: amq-cluster
     extraVolumes:
     - name: extra-volume
       persistentVolumeClaim:
@@ -75,6 +77,8 @@ spec:
     size: 1
     persistenceEnabled: false
     clustered: false
+    labels:
+      broker-cluster: amq-cluster
     extraVolumes:
     - name: extra-volume
       persistentVolumeClaim:
@@ -135,6 +139,8 @@ spec:
     size: 1
     persistenceEnabled: false
     clustered: false
+    labels:
+      broker-cluster: amq-cluster
     extraVolumes:
     - name: extra-volume
       persistentVolumeClaim:

@@ -6,9 +6,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    statefulset.kubernetes.io/pod-name: peer-broker-a-ss-0
-    statefulset.kubernetes.io/pod-name: peer-broker-b-ss-0
-    statefulset.kubernetes.io/pod-name: peer-broker-c-ss-0
+      broker-cluster: amq-cluster
   ports:
     - name: amqp
       port: 61616            # broker acceptor port
