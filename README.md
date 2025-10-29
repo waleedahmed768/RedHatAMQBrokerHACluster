@@ -38,3 +38,17 @@ cd amq-broker
 ./bin/artemis
 
 Red Hat AMQ Broker 7.13.2.GA >      producer --url tcp://172.16.1.76:61616 --user admin --password admin --destination myqueue --message-count 10 --message  "hello from prod master "
+
+
+
+
+Configuring authentication and authorization:
+
+oc create secret generic custom-jaas-config --from-file=login.config --from-file=new-users.properties --from-file=new-roles.properties
+
+
+The secret name must have a suffix of -jaas-config so the Operator can recognize that the secret contains login module configuration and propagate any updates to each broker Pod.
+
+The Operator mounts the login.config file in the secret in a /amq/extra/secrets/secret name directory on each Pod and configures the broker JVM to read the mounted login.config file instead of the default login.config file. If the login.config file contains a properties login module, the referenced users and roles properties file are also mounted on each Pod.
+
+
