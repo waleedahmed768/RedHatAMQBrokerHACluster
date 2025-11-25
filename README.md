@@ -1,4 +1,23 @@
 # RedHatAMQBrokerHACluster
+This procedure shows how to use OperatorHub to deploy the latest version of the Operator for AMQ Broker to a specified OpenShift project.
+
+Note
+In OperatorHub, you can install only the latest Operator version that is provided in each channel. If you want to install an earlier version of an Operator, you must install the Operator by using the CLI. For more information, see Section 3.2, “Installing the Operator using the CLI”.
+
+Prerequisites
+
+The Red Hat Integration - AMQ Broker for RHEL 9 (Multiarch) Operator must be available in OperatorHub.
+You have cluster administrator privileges.
+Procedure
+
+Log in to the OpenShift Container Platform web console as a cluster administrator.
+In left navigation menu, click menu:Operators[OperatorHub].
+On the Project drop-down menu at the top of the OperatorHub page, select the project in which you want to deploy the Operator.
+On the OperatorHub page, use the Filter by keyword…​ box to find the Red Hat Integration - AMQ Broker for RHEL 9 (Multiarch) Operator.
+
+
+
+
 
 Configuring leader-follower broker deployments that use a shared journal 
 
