@@ -6,6 +6,9 @@ In OperatorHub, you can install only the latest Operator version that is provide
 
 Prerequisites
 
+
+
+
 The Red Hat Integration - AMQ Broker for RHEL 9 (Multiarch) Operator must be available in OperatorHub.
 You have cluster administrator privileges.
 Procedure
@@ -16,7 +19,8 @@ On the Project drop-down menu at the top of the OperatorHub page, select the pro
 On the OperatorHub page, use the Filter by keyword…​ box to find the Red Hat Integration - AMQ Broker for RHEL 9 (Multiarch) Operator.
 
 
-
+also add view role to default service account :::
+oc policy add-role-to-user view -z default
 
 
 Configuring leader-follower broker deployments that use a shared journal 
