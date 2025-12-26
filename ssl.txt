@@ -1,0 +1,19 @@
+to enable ssl on acceptor create secret using below steps 
+oc project openshift-ingress  #get default certificate from opensshift cluster  
+
+oc get secret router-certs-default   -o jsonpath='{.data.tls\.crt}' | base64 -d > broker.crt
+oc get secret router-certs-default   -o jsonpath='{.data.tls\.key}' | base64 -d > broker.key
+
+openssl pkcs12 -export   -in broker.crt   -inkey broker.key   -name pr-broker   -out broker.p12   -passout pass:1234.com
+
+keytool -importkeystore   -destkeystore broker.ks   -deststoretype PKCS12   -deststorepass 1234.com   -srckeystore broker.p12   -srcstoretype PKCS12   -srcstorepass 1234.com   -alias pr-broker
+
+ keytool -list -keystore broker.ks -storepass 1234.com
+ 
+ keytool -importcert   -alias pr-broker   -file broker.crt   -keystore client.ts   -storepass 1234.com   -noprompt
+ 
+oc create secret generic mirror   --from-file=broker.ks=broker.ks   --from-file=client.ts=client.ts   --from-literal=keyStorePassword=1234.com   --from-literal=trustStorePassword=1234.com
+
+
+#certificates are important for queue mirroring b/w Pr and Dr.
+mirroring works only when PR statefulset 0 connect with DR statfule set 0 and if cluster has 2 replicas then sttafulset 1 connect with DR statulset 1.As in Cluster both pod distribute messages and consumer can consume from any pod .  

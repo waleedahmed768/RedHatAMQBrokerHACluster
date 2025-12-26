@@ -1,0 +1,49 @@
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemis
+metadata:
+  name: broker-test-dr-cluster
+spec:
+  acceptors:
+    - expose: true
+      name: all
+      port: 61616
+      protocols: all
+      sslEnabled: false
+    - expose: true
+      name: amqp
+      port: 5672
+      protocols: amqp
+      sslEnabled: true
+      sslSecret: dr-mirror
+  adminPassword: admin
+  adminUser: admin
+  brokerProperties:
+    - "amqpUseTopologyForLoadBalancing=false"
+    #- AMQPConnections.pr.uri=tcp://10.0.1.118:31444
+    - AMQPConnections.pr.uri=tcp://broker-test-pr-cluster-amqp-${STATEFUL_SET_ORDINAL}-svc-rte-jazz-amq-cluster.apps.ocp-amq.aksa.com.pk:443?sslEnabled=true;keyStorePath=/amq/extra/secrets/dr-mirror/broker.ks;keyStorePassword=1234.com;trustStorePath=/amq/extra/secrets/dr-mirror/client.ts;trustStorePassword=1234.com
+    - AMQPConnections.pr.retryInterval=5000
+    - AMQPConnections.pr.user=admin
+    - AMQPConnections.pr.password=admin
+    - AMQPConnections.pr.connectionElements.mirror.type=MIRROR
+    - AMQPConnections.pr.connectionElements.mirror.messageAcknowledgements=true
+    - AMQPConnections.pr.connectionElements.mirror.queueCreation=true
+    - AMQPConnections.pr.connectionElements.mirror.queueRemoval=true
+    #- AMQPConnections.pr.connectionElements.mirror.addressFilter=jazz-*
+  console:
+    expose: true
+  deploymentPlan:
+    image: placeholder
+    requireLogin: false
+    persistenceEnabled: true
+    journalType: nio
+    messageMigration: true
+    size: 2
+    extraMounts:
+      secrets:
+      - dr-mirror
+    storage:
+      size: 2Gi
+      storageClassName: nfs-storage-v2
+    labels:
+      broker-cluster: dr-cluster-amq-cluster
+
